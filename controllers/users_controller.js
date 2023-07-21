@@ -1,9 +1,42 @@
 const User = require('../modals/user');
 
 module.exports.profile = function(req,res){
-    return res.render('user_profile', {
-        title: 'User Profile'
-    });
+    //  if(req.cookies.user_id){
+    //     User.findById(req.cookies.user_id, function(err, user){
+    //         if(user){
+    //             return res.render('user-profile',{
+    //                 title: "User Profile",
+    //                 user: user
+    //             });
+    //         }
+
+    //         return res.redirect('/users/sign-in');
+    //     });
+    //  }
+    //  else{
+    //     return res.redirect('/users/sign-in');
+    //  }
+    if (req.cookies.user_id) {
+        // If it exists, find the user by the provided 'user_id'
+        User.findById(req.cookies.user_id)
+          .then(function(user) {
+            if (user) {
+              return res.render('user_profile', {
+                title: "User Profile",
+                user: user
+              });
+            } else {
+              return res.redirect('/users/sign-in');
+            }
+          })
+          .catch(function(err) {
+            console.log('Error in finding user by user_id:', err);
+            return res.redirect('/users/sign-in');
+          });
+      } else {
+        // If the 'user_id' cookie does not exist, redirect to the sign-in page
+        return res.redirect('/users/sign-in');
+      }
 }
 
 module.exports.name = function(req,res){
@@ -74,5 +107,27 @@ module.exports.create = function(req,res){
 
 //sign in and create a session for user
 module.exports.createSession=function(req,res){
+  // steps to authenticate
+  // find the user
+  User.findOne({ email: req.body.email })
+    .then(function(user) {
+      // handle user found
+      if (user) {
+        // handle password which doesn't match
+        if (user.password !== req.body.password) {
+          return res.redirect('back');
+        }
 
+        // handle session creation
+        res.cookie('user_id', user.id);
+        return res.redirect('/users/profile');
+      } else {
+        // handle user not found
+        return res.redirect('back');
+      }
+    })
+    .catch(function(err) {
+      console.log('error in finding user in signing in', err);
+      return;
+    });
 }
