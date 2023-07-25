@@ -1,10 +1,23 @@
-module.exports.home = function(req,res){
-    console.log(req.cookies);
-    res.cookie('user_id',25);
+const Post = require('../modals/post')
 
-    return res.render('home',{
-            title: "Home"
+module.exports.home = function(req,res){
+    // console.log(req.cookies);
+    // res.cookie('user_id',25);
+
+    Post.find({}).
+    then(posts => {
+        return res.render('home',{
+            title: "Codeial || Home",
+            posts: posts
+
     });
+    })
+    .catch(err => {
+        console.log("Not able to post");
+        return;
+    })
+
+    
 }
 
 module.exports.room = function(req,res){
