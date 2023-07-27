@@ -1,10 +1,9 @@
-const Post = require('../modals/post')
+const Post = require('../modals/post');
+const User=require('../modals/user');
 
-module.exports.home = function(req,res){
-    // console.log(req.cookies);
-    // res.cookie('user_id',25);
-
-    Post.find({})
+module.exports.home = async function(req, res){
+    
+    const posts = await Post.find({})
     .populate('user')
     .populate({
         path: 'comments',
@@ -12,20 +11,15 @@ module.exports.home = function(req,res){
             path: 'user'
         }
     })
-    .exec().
-    then(posts => {
-        return res.render('home',{
-            title: "Codeial || Home",
-            posts: posts
+    .exec();
 
-    });
-    })
-    .catch(err => {
-        console.log("Not able to post");
-        return;
-    })
-
+    const users = await User.find({});
     
+    return res.render('home', {
+        title: "Codeial | Home",
+        posts:  posts,
+        all_users: users
+    });
 }
 
 module.exports.room = function(req,res){
