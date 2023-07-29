@@ -9,12 +9,34 @@ module.exports.profile = async function(req, res) {
 }
 
 module.exports.update = async function(req, res){
-  if(req.user.id == req.params.id){
-      await User.findByIdAndUpdate(req.params.id, req.body);
-      return res.redirect('back');
-  }else{
-      return res.status(401).send('Unauthorized');
-  }
+    if(req.user.id == req.params.id){
+
+      try{
+          let user = await User.findById(req.params.id);
+          User.uploadedAvatar(req, res, function(err){
+             if(err){console.log('****Multer Error: ', err)}
+
+             user.name = req.body.name;
+             user.email = req.body.email;
+
+             if(req.file){
+              user.avatar = User.avatarPath + '/' + req.file.filename;
+             }
+
+             user.save();
+             return res.redirect('back');
+          });
+      }catch(err){
+        req.flash('error', err);
+        return res.redirect('back');
+    
+        }
+      
+      }else{
+        req.flash('error', 'Unauthorized');
+        return res.status(401).send('Unauthorized');
+      }
+  
 }
 
 module.exports.name = function(req,res){

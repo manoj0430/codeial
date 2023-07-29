@@ -18,10 +18,12 @@ app.use(express.urlencoded());
 
 //setting up cookie parser
 app.use(cookieParser());
+
 //using static files
-
 app.use(express.static('./assets'));
+//  make uploads path available to browser
 
+app.use('/uploads', express.static(__dirname + '/uploads'));
 //Using Layouts
 app.use(expressLayouts);
 
@@ -60,6 +62,7 @@ app.use(passport.session());
 app.use(passport.setAuthenticatedUser);
 app.use(flash());
 app.use(customMware.setFlash)
+
 
 //use express router
 app.use('/', require('./routes'));
