@@ -1,7 +1,8 @@
 #layout-header nav{
     display: flex;
     justify-content: space-between;
-    padding: 0 10px;
+    padding:  0 10px;
+    margin-bottom: 10px;
     background-color: rgb(252, 249, 34);
     color: white;
     box-shadow: 1px 1px 1px 1px rgb(40, 38, 38);
