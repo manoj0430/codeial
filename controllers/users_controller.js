@@ -79,41 +79,22 @@ module.exports.create = function(req,res){
     //if password and confirm password doesnot match
     if(req.body.password != req.body.confirm_password){
         return res.redirect('back');
-    }
+      }
     
-    // User.findOne({email: req.body.email}, function(err, user){
-    //     if(err){
-    //         console.log('Error in finding user in signing up');
-    //         return;
-    //     }
-        
-    //     if(!user){
-    //         User.create(req.body, function(err,user){
-    //             if(err){
-    //                 console.log('Error in creating user');
-    //                 return;
-    //             }
-    //             return res.redirect('/users/sign-in');
-    //         })
-    //     }else{
-    //         return res.redirect('back');
-    //     }
-    // })
-
-    User.findOne({ email: req.body.email })
-  .then((user) => {
-    if (!user) {
-      return User.create(req.body);
-    } else {
-      throw new Error('User already exists');
-    }
-  })
-  .then((user) => {
-    return res.redirect('/users/sign-in');
-  })
-  .catch((err) => {
-    console.log('Error:', err.message);
-    return res.redirect('back');
+      User.findOne({ email: req.body.email })
+        .then((user) => {
+        if (!user) {
+        return User.create(req.body);
+        } else {
+          throw new Error('User already exists');
+        }
+      })
+        .then((user) => {
+        return res.redirect('/users/sign-in');
+        })
+        .catch((err) => {
+          console.log('Error:', err.message);
+          return res.redirect('back');
   }); 
 
     
